@@ -15,7 +15,8 @@ namespace DCISample.Contexts.Account
         Hashtable _roleMap;
 
 
-        // The system operation         
+        #region System operations
+
         public void Transfer(int amt, int from, int to, Bank bank)
         {
             // Role mappings
@@ -32,8 +33,56 @@ namespace DCISample.Contexts.Account
             Call("Source", "TransferTo");
         }
 
+        #endregion
 
-        // The execution engine              
+
+        #region The Role classes  with role methods 
+
+        class Source
+        {
+            private readonly Context _context;
+            public Source(Context context)
+            {
+                _context = context;
+            }
+
+            public object TransferTo()
+            {
+                if ((int)_context.Call("Source", "Balance") < _context.Amount)
+                {
+                    // TODO log error "ERROR. Insufficient funds, Operation aborted. "
+                }
+                else
+                {
+                    object[] args = { _context.Amount };
+                    _context.Call("Source", "Decrease", args);
+                    _context.Call("Destination", "TransferFrom");
+                }
+
+                return (null);
+            }
+        }
+
+        class Destination
+        {
+            private readonly Context _context;
+            public Destination(Context context)
+            {
+                _context = context;
+            }
+
+            public object TransferFrom()
+            {
+                object[] args = { _context.Amount };
+                _context.Call("Destination", "Increase", args);
+                return (null);
+            }
+        }
+
+        #endregion
+
+        #region The execution engine  
+
         public object Call(string toRole, string methodName)
         {
             object[] args = { };
@@ -42,7 +91,7 @@ namespace DCISample.Contexts.Account
 
         public object Call(string toRole, string methodName, object[] args)
         {
-            string roleClassName = "DCISample.Models." + toRole;
+            string roleClassName = "DCISample.Contexts.Account.Context+" + toRole;
             MethodInfo roleMethod = null;
             MethodInfo dataMethod = null;
             try
@@ -82,13 +131,14 @@ namespace DCISample.Contexts.Account
                 var dataMethodResult = dataMethod.Invoke(dataObject, args);
                 return dataMethodResult;
             }
-            catch
+            catch (Exception e)
             {
                 // TODO log
             }
             return (null);
         }
 
+        #endregion
 
     }
 }
