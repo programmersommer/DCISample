@@ -3,10 +3,10 @@ using System.Collections;
 using System.Reflection;
 using DCISample.Models;
 
-namespace DCISample.Contexts.Account
+namespace DCISample.Contexts
 {
     // Context = use cases
-    public class Context
+    public class AccountContext
     {
         // The Roles = interaction                       
         private Models.Account _source;
@@ -40,8 +40,8 @@ namespace DCISample.Contexts.Account
 
         class Source
         {
-            private readonly Context _context;
-            public Source(Context context)
+            private readonly AccountContext _context;
+            public Source(AccountContext context)
             {
                 _context = context;
             }
@@ -65,8 +65,8 @@ namespace DCISample.Contexts.Account
 
         class Destination
         {
-            private readonly Context _context;
-            public Destination(Context context)
+            private readonly AccountContext _context;
+            public Destination(AccountContext context)
             {
                 _context = context;
             }
@@ -91,7 +91,7 @@ namespace DCISample.Contexts.Account
 
         public object Call(string toRole, string methodName, object[] args)
         {
-            string roleClassName = "DCISample.Contexts.Account.Context+" + toRole;
+            string roleClassName = "DCISample.Contexts.AccountContext+" + toRole;
             MethodInfo roleMethod = null;
             MethodInfo dataMethod = null;
             try
@@ -106,7 +106,7 @@ namespace DCISample.Contexts.Account
 
                 if (roleMethod != null)
                 {
-                    var roleConstructor = roleClass.GetConstructor(new[] { typeof(Context) });
+                    var roleConstructor = roleClass.GetConstructor(new[] { typeof(AccountContext) });
                     var instance = roleConstructor.Invoke(new object[] { this });
                     var roleMethodResult = roleMethod.Invoke(instance, new object[] { });
                     return roleMethodResult;

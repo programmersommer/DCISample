@@ -1,4 +1,4 @@
-using DCISample.Contexts.Account;
+using DCISample.Contexts;
 using DCISample.Models;
 using Xunit;
 
@@ -6,20 +6,26 @@ namespace DCISample.Text
 {
     public class BankAccountTests
     {
-        private readonly Bank _bank = new Bank();
-        private readonly Context _context = new Context();
-        // TODO prepare variables
+        private readonly Bank _bank;
+        private readonly AccountContext _context;
 
-        [Fact]
-        public void BankAccountTest()
+        public BankAccountTests()
         {
-            _bank.AddAccountNo(111, 1000);
-            _bank.AddAccountNo(222, 0);
+            _bank = new Bank();
+            _context = new AccountContext();
+        }
 
-            _context.Transfer(300, 111, 222, _bank);
+        [Theory]
+        [InlineData(1000, 0, 300, 700, 300)]
+        public void BankAccountTest(int initial1, int initial2, int amount, int final1, int final2)
+        {
+            _bank.AddAccountNo(1, initial1);
+            _bank.AddAccountNo(2, initial2);
 
-            Assert.True(_bank.FindAccountNo(111).Balance() == 700);
-            Assert.True(_bank.FindAccountNo(222).Balance() == 300);
+            _context.Transfer(amount, 1, 2, _bank);
+
+            Assert.True(_bank.FindAccountNo(1).Balance() == final1);
+            Assert.True(_bank.FindAccountNo(2).Balance() == final2);
         }
     }
 }
