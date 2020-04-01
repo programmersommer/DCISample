@@ -41,6 +41,9 @@ namespace DCISample.Contexts
         class Source
         {
             private readonly AccountContext _context;
+            // because not possible to access outer class like it could be done in Java
+            // https://devblogs.microsoft.com/oldnewthing/?p=30273
+            // let's use constructor to get reference to outer class
             public Source(AccountContext context)
             {
                 _context = context;
@@ -66,6 +69,8 @@ namespace DCISample.Contexts
         class Destination
         {
             private readonly AccountContext _context;
+            // because not possible to access outer class like it could be done in Java
+            // let's use constructor to get reference to outer class
             public Destination(AccountContext context)
             {
                 _context = context;
