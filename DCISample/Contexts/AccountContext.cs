@@ -17,10 +17,10 @@ namespace DCISample.Contexts
 
         #region System operations
 
-        public void Transfer(int amt, int from, int to, Bank bank)
+        public void Transfer(int amount, int from, int to, Bank bank)
         {
             // Role mappings
-            Amount = amt;
+            Amount = amount;
             _source = bank.FindAccountNo(from);
             _destination = bank.FindAccountNo(to);
             _roleMap = new Hashtable
@@ -34,7 +34,6 @@ namespace DCISample.Contexts
         }
 
         #endregion
-
 
         #region The Role classes  with role methods 
 
